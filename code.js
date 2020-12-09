@@ -21,6 +21,15 @@ const elements = {
             let span = document.createElement("span")
             span.classList.add(time)
             timer.appendChild(span)
+            if (time == "colonOne" || time == "colonTwo") {
+                span.innerHTML = '<img src="timer/colon.gif">'
+            } else {
+                if (time == "secounds") {
+                    span.innerHTML = '<img src="timer/c0.gif"><img src="timer/c0.gif"><img src="timer/dot.gif"><img src="timer/c0.gif"><img src="timer/c0.gif"><img src="timer/c0.gif">'
+                } else {
+                    span.innerHTML = '<img src="timer/c0.gif"><img src="timer/c0.gif">'
+                }
+            }
         }
         createSpans("hours")
         createSpans("colonOne")
@@ -166,11 +175,6 @@ const elements = {
             let hours = document.querySelector('.hours')
             let minutes = document.querySelector('.minutes')
             let secounds = document.querySelector('.secounds')
-            let colonOne = document.querySelector(".colonOne")
-            let colonTwo = document.querySelector(".colonTwo")
-            colonOne.innerHTML = img[10]
-            colonTwo.innerHTML = img[10]
-
             let elapsedTime = 0
             let s = 0
             let m = 0
@@ -353,9 +357,7 @@ const elements = {
 
         checkWin()
     }
-
 }
-
 elements.loadDivs()
 elements.loadButtons()
 elements.choiceSize()
