@@ -87,7 +87,6 @@ const elements = {
         addEL()
 
         let pictures
-        let lastPicture
 
         function pushLeft() {
             removeEL()
@@ -188,13 +187,25 @@ const elements = {
     choiceSize: function () {
         //wybór rozmiaru planszy
 
-        let btns = document.getElementsByClassName("btn")
-        for (let i = 0; i < 4; i++) {
-            btns[i].addEventListener("click", addAreas)
-            btns[i].addEventListener("click", stopTimer)
+        function addEventButtons() {
+            let btns = document.getElementsByClassName("btn")
+            for (let i = 0; i < 4; i++) {
+                btns[i].addEventListener("click", addAreas)
+                btns[i].addEventListener("click", stopTimer)
+            }
+        }
+        addEventButtons()
+
+        function removeEventButtons() {
+            let btns = document.getElementsByClassName("btn")
+            for (let i = 0; i < 4; i++) {
+                btns[i].removeEventListener("click", addAreas)
+                btns[i].removeEventListener("click", stopTimer)
+            }
         }
 
         function addAreas() {
+
             //zatrzymanie timera
             function stopTimer() {
                 clearInterval(interval)
@@ -238,10 +249,13 @@ const elements = {
             last.style.backgroundImage = 'none'
             last.id = "special"
             randomSlide()
-
         }
 
         function randomSlide() {
+            //wstrzymanie możliwości naciśnięcia przycisku
+
+            removeEventButtons()
+
             //rozsuwanie
 
             let boxes = document.getElementsByClassName("area")
@@ -277,7 +291,8 @@ const elements = {
             window.setTimeout(function () {
                 clearInterval(interval)
                 startTimer()
-            }, btnSize * 2000) //tutaj 2000
+                addEventButtons()
+            }, btnSize * 10) //tutaj 1000
 
             elements.slide()
         }
@@ -316,6 +331,11 @@ const elements = {
         let startTime
 
         function startTimer() {
+
+            function stopTimer() {
+                clearInterval(interval)
+            }
+
             stopTimer()
 
             startTime = Date.now()
@@ -449,7 +469,6 @@ const elements = {
 
         let box = document.getElementsByClassName("area")
         let amount = document.getElementsByClassName("area").length
-
         for (let i = 0; i < amount; i++) {
             box[i].addEventListener("click", swap)
         }
@@ -459,7 +478,6 @@ const elements = {
             let btnSize = Math.sqrt(amount)
             let clickX = this.offsetLeft
             let clickY = this.offsetTop
-
             let gameBlock = document.getElementById("special")
             let blockX = gameBlock.offsetLeft
             let blockY = gameBlock.offsetTop
@@ -472,7 +490,6 @@ const elements = {
                 this.style.left = blockX + "px"
                 this.style.top = blockY + "px"
             }
-
             elements.choiceSize()
         }
     },
