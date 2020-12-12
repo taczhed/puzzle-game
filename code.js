@@ -2,6 +2,11 @@ let interval
 let realTime
 let photos
 let slide
+let activeLevel
+let topThree = []
+let topFour = []
+let topFive = []
+let topSix = []
 const elements = {
 
     loadDivs: function () {
@@ -220,6 +225,7 @@ const elements = {
             //dodanie nowego obrazka
 
             let size = this.getAttribute("id")
+            activeLevel = size
 
             let areaSize = 600 / size
             let x = 0
@@ -292,7 +298,7 @@ const elements = {
                 clearInterval(interval)
                 startTimer()
                 addEventButtons()
-            }, btnSize * 10) //tutaj 1000
+            }, btnSize * 10) //ilość czasu
 
             elements.slide()
         }
@@ -448,17 +454,37 @@ const elements = {
                 stopTimer()
 
                 let gameInfo = document.getElementById("game-info")
-                gameInfo.style.display = "block"
-                gameInfo.innerHTML = "Brawo! Gra zajęła ci dokładnie: " + realTime
+                gameInfo.style.display = "flex"
+                gameInfo.innerHTML = ""
 
-                setTimeout(function () {
-                    gameInfo.style.display = "none"
-                }, 4000)
+                let timeDiv = document.createElement("div")
+                timeDiv.classList.add("time")
+                gameInfo.appendChild(timeDiv)
+                timeDiv.innerHTML = "Brawo! Gra zajęła ci dokładnie: " + realTime
+
+                let input = document.createElement("input")
+                input.classList.add("nick")
+                input.setAttribute("type", "text")
+                input.setAttribute("placeholder", "Wpisz swój nick")
+                gameInfo.appendChild(input)
+
+                let btn = document.createElement("button")
+                btn.classList.add("submit")
+                btn.innerHTML = "Zapisz!"
+                gameInfo.appendChild(btn)
+
+                let next = document.createElement("button")
+                next.classList.add("next")
+                next.innerHTML = "Pomiń"
+                gameInfo.appendChild(next)
 
                 let box = document.querySelectorAll(".area")
                 for (let i = 0; i < amount; i++) {
                     box[i].remove()
                 }
+
+                elements.cookies()
+                elements.printTable()
             }
         }
         checkWin()
@@ -493,6 +519,127 @@ const elements = {
             elements.choiceSize()
         }
     },
+
+    cookies: function () {
+
+        let submitBtn = document.querySelector(".submit")
+        let gameInfo = document.getElementById("game-info")
+        let nick
+        let cookieTable = []
+
+        function addEventOnSubmit() {
+            submitBtn.addEventListener("click", takeNick)
+            submitBtn.addEventListener("click", addCookie)
+        }
+        addEventOnSubmit()
+
+        function takeNick() {
+            nick = document.querySelector(".nick").value
+            console.log(nick)
+            gameInfo.style.display = "none"
+        }
+
+        function next() {
+            let next = document.querySelector(".next")
+            next.addEventListener("click", function () {
+                gameInfo.style.display = "none"
+            })
+        }
+        next()
+
+        function addCookie() {
+            user = document.cookie = nick + "|" + activeLevel + "|=" + realTime
+        }
+
+        function convertCookie() {
+            topThree = []
+            topFour = []
+            topFive = []
+            topSix = []
+            let cookieUser
+            let cookieString = document.cookie
+            cookieTable = cookieString.split(";")
+
+            for (let x = 0; x < cookieTable.length; x++) {
+                cookieUser = cookieTable[x].split("|")
+                cookieUser[2] = cookieUser[2].substring(1)
+                let timeString = cookieUser[2]
+                cookieUser[2] = cookieUser[2].replace(":", "")
+                cookieUser[2] = cookieUser[2].replace(":", "")
+                cookieUser[2] = cookieUser[2].replace("  ", "")
+                cookieUser[2] = cookieUser[2].replace("  ", "")
+                cookieUser[2] = parseFloat(cookieUser[2])
+
+                if (cookieUser[0] == " " || cookieUser[0] == "") {
+                    cookieUser[0] = "anonim"
+                }
+
+                if (cookieUser[1] == "3") {
+                    topThree.push({ level: cookieUser[1], nick: cookieUser[0], time: cookieUser[2], timeString: timeString })
+                } else if (cookieUser[1] == "4") {
+                    topFour.push({ level: cookieUser[1], nick: cookieUser[0], time: cookieUser[2], timeString: timeString })
+                } else if (cookieUser[1] == "5") {
+                    topFive.push({ level: cookieUser[1], nick: cookieUser[0], time: cookieUser[2], timeString: timeString })
+                } else if (cookieUser[1] == "6") {
+                    topSix.push({ level: cookieUser[1], nick: cookieUser[0], time: cookieUser[2], timeString: timeString })
+                }
+            }
+
+            function sort(obj) {
+                obj.sort(function (a, b,) {
+                    return parseFloat(a.time) - parseFloat(b.time);
+                });
+            }
+            sort(topThree)
+            sort(topFour)
+            sort(topFive)
+            sort(topSix)
+
+            function deleteLast(array) {
+                if (array.length >= 11) {
+                    let name = array[10].nick + "|" + array[10].level + "|"
+                    document.cookie = name + "= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
+                    array.length = 10
+                }
+            }
+
+            deleteLast(topThree)
+            deleteLast(topFour)
+            deleteLast(topFive)
+            deleteLast(topSix)
+        }
+        convertCookie()
+    },
+
+    printTable: function () {
+
+        function printTop() {
+            let gameInfo = document.getElementById("game-info")
+            let stats = document.createElement("div")
+            stats.classList.add("stats")
+            gameInfo.appendChild(stats)
+
+            function createList(array, type) {
+                let list = document.createElement("ol")
+                stats.appendChild(list)
+
+                let topic = document.createElement("p")
+                topic.innerHTML = "TOP 10 trybu " + type
+                list.appendChild(topic)
+                for (let x = 0; x < array.length; x++) {
+                    let li = document.createElement("li")
+                    list.appendChild(li)
+                    li.appendChild(document.createTextNode(array[x].nick + " - " + array[x].timeString))
+                }
+            }
+
+            createList(topThree, "3 x 3")
+            createList(topFour, "4 x 4")
+            createList(topFive, "5 x 5")
+            createList(topSix, "6 x 6")
+        }
+        printTop()
+    }
 }
 elements.loadDivs()
 elements.picturesSlider()

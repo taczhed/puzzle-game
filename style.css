@@ -134,6 +134,9 @@ div#special {
 }
 
 #game-info {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     position: absolute;
     top: 0;
     left: 0;
@@ -145,7 +148,56 @@ div#special {
     font-size: 32px;
     color: white;
     text-align: center;
-    line-height: 100vh;
+}
+
+div.time {
+    width: 100%;
+    height: 100px;
+}
+
+input.nick {
+    width: 260px;
+    height: 70px;
+}
+
+.submit {
+    width: 100px;
+    height: 70px;
+    margin-top: 10px;
+    border: 2px solid transparent;
+    background-color: #52c6ff;
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.submit:hover {
+    border: 2px solid #52c6ff;
+    background-color: transparent;
+    color: #52c6ff;
+    cursor: pointer;
+}
+
+.next {
+    width: 100px;
+    height: 70px;
+    margin-top: 10px;
+    border: 2px solid transparent;
+    background-color: #52c6ff;
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.next:hover {
+    border: 2px solid #52c6ff;
+    background-color: transparent;
+    color: #52c6ff;
+    cursor: pointer;
 }
 
 .end {
@@ -159,4 +211,32 @@ div.timer {
     height: 21px;
     background-color: #000;
     margin: 10px 0;
+}
+
+div.stats {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    border: 2px solid white;
+    margin-top: 10px;
+    padding-right: 20px;
+}
+
+ol p {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+ol {
+    color: white;
+}
+
+ol li {
+    text-align: left;
+    font-size: 12px;
+    line-height: 30px;
+}
+
+ol li:first-of-type {
+font-weight: bold;
 }
