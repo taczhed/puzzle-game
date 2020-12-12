@@ -298,7 +298,7 @@ const elements = {
                 clearInterval(interval)
                 startTimer()
                 addEventButtons()
-            }, btnSize * 10) //ilość czasu
+            }, btnSize * 1000) //ilość czasu
 
             elements.slide()
         }
